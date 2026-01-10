@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Banana on Notion",
+  "version": "0.1.0",
+  "description": "Notion専用: 選択テキストを取得して表示する",
+  "action": { "default_popup": "popup.html" },
+  "host_permissions": ["https://www.notion.so/*"],
+  "permissions": ["activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.notion.so/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
