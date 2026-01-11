@@ -1,11 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Banana on Notion",
-  "version": "0.1.0",
-  "description": "Notion専用: 選択テキストを取得して表示する",
-  "action": { "default_popup": "popup.html" },
-  "host_permissions": ["https://www.notion.so/*"],
-  "permissions": ["activeTab"],
+  "version": "0.9.0",
+  "description": "Notion専用: 選択テキストから図解を生成してNotionへ挿入",
+  "permissions": ["contextMenus", "scripting"],
+  "host_permissions": [
+    "https://www.notion.so/*",
+    "https://banana-on-notion-api-346214367756.us-central1.run.app/*"
+  ],
+  "background": { "service_worker": "service_worker.js" },
   "content_scripts": [
     {
       "matches": ["https://www.notion.so/*"],
