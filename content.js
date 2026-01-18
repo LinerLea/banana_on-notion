@@ -1,5 +1,3 @@
-console.log("banana content script loaded", location.href);
-
 function showToast(text, kind = "success") {
   const id = "banana-toast";
   let el = document.getElementById(id);
@@ -15,7 +13,7 @@ function showToast(text, kind = "success") {
     el.style.borderRadius = "10px";
     el.style.color = "#fff";
     el.style.fontSize = "13px";
-    el.style.maxWidth = "420px";
+    el.style.maxWidth = "520px";
     el.style.whiteSpace = "pre-wrap";
     el.style.wordBreak = "break-word";
     el.style.boxShadow = "0 6px 20px rgba(0,0,0,.25)";
@@ -34,42 +32,38 @@ function showToast(text, kind = "success") {
   el._t = setTimeout(() => (el.style.opacity = "0"), 5200);
 }
 
-async function copyToClipboard(text) {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
-  }
-  const ta = document.createElement("textarea");
-  ta.value = text;
-  ta.style.position = "fixed";
-  ta.style.left = "-9999px";
-  document.body.appendChild(ta);
-  ta.select();
-  document.execCommand("copy");
-  ta.remove();
+async function writePngBase64ToClipboard(pngBase64) {
+  const bytes = Uint8Array.from(atob(pngBase64), (c) => c.charCodeAt(0));
+  const blob = new Blob([bytes], { type: "image/png" });
+
+  await navigator.clipboard.write([
+    new ClipboardItem({ "image/png": blob })
+  ]);
 }
 
-chrome.runtime.onMessage.addListener((msg) => {
+chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg?.type === "BANANA_TOAST") {
-    if (msg.status === "loading") showToast("図解を生成中…", "loading");
-    if (msg.status === "error") showToast(`失敗: ${msg.message || "unknown"}`, "error");
+    if (msg.status === "loading") showToast(msg.message || "Working...", "loading");
+    else if (msg.status === "success") showToast(msg.message || "Done", "success");
+    else if (msg.status === "error") showToast(msg.message || "Error", "error");
     return;
   }
 
-  if (msg?.type === "BANANA_COPY_MARKDOWN") {
+  if (msg?.type === "BANANA_CLIPBOARD_WRITE") {
     (async () => {
       try {
-        // ✅ URL単体がNotionで一番安定して画像化される
-        await copyToClipboard(msg.url);
-
-        showToast(
-          "✅ 画像URLをコピーしました。\nNotion本文をクリックしてカーソルを出し、Cmd+V（Ctrl+V）してください。\n（貼った後に「Embed image」を選べます）",
-          "success"
-        );
+        showToast("画像をクリップボードへコピー中…", "loading");
+        await writePngBase64ToClipboard(msg.pngBase64);
+        showToast("コピーしました。Notionで貼りたい位置をクリックしてCmd+Vしてください。", "success");
+        sendResponse({ ok: true });
       } catch (e) {
-        console.error(e);
-        showToast("コピーに失敗しました（権限/ブラウザ制限）。", "error");
+        showToast(
+          "クリップボード書き込みに失敗しました。\nNotion画面を一度クリックしてフォーカスを当ててから、もう一度実行してください。",
+          "error"
+        );
+        sendResponse({ ok: false, error: String(e) });
       }
     })();
+    return true;
   }
 });

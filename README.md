@@ -38,4 +38,4 @@ Notionに貼り付けて使える **Chrome拡張機能**です。
 git clone https://github.com/LinerLea/banana_on-notion.git
 cd banana_on-notion
 
-
+## JPYC寄付あったら嬉しいな

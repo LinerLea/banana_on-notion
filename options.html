@@ -7,7 +7,7 @@
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; padding: 16px; line-height: 1.6; }
     .row { margin: 12px 0; }
-    input { width: 520px; max-width: 100%; padding: 10px; font-size: 14px; }
+    input { width: 720px; max-width: 100%; padding: 10px; font-size: 14px; }
     button { padding: 10px 14px; font-size: 14px; cursor: pointer; }
     .status { margin-top: 10px; color: #333; }
     .hint { color: #666; font-size: 13px; }
@@ -15,28 +15,22 @@
   </style>
 </head>
 <body>
-  <h1>Banana on Notion 設定</h1>
+  <h1>Banana on Notion Settings</h1>
 
   <div class="row">
-    <label for="apiKey">Gemini API Key</label><br />
+    <div>GEMINI_API_KEY</div>
     <input id="apiKey" type="password" placeholder="AIza..." />
-    <div class="hint">
-      このキーは <code>chrome.storage.sync</code> に保存されます。<br />
-      同じGoogleアカウントでChrome同期がONなら、他のPCにも自動で反映されます。
-    </div>
   </div>
 
   <div class="row">
-    <button id="save">保存</button>
-    <button id="clear">削除</button>
+    <button id="save">Save</button>
+    <button id="clear">Clear</button>
+    <div class="status" id="status"></div>
   </div>
 
-  <div class="status" id="status"></div>
-
-  <hr />
   <div class="hint">
-    同期の前提: Chromeの「設定」→「同期とGoogleサービス」→「同期」をON。<br />
-    会社アカウント等で同期が制限されている場合は反映されません。
+    This key is stored in <code>chrome.storage.sync</code> (synced across devices if Chrome Sync is ON).<br />
+    It is not included in GitHub.
   </div>
 
   <script src="options.js"></script>

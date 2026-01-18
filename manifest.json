@@ -1,18 +1,44 @@
 {
   "manifest_version": 3,
   "name": "Banana on Notion",
-  "version": "0.9.0",
-  "description": "Notion専用: 選択テキストから図解を生成してNotionへ挿入",
-  "permissions": ["contextMenus", "scripting"],
+  "version": "0.2.1",
+  "description": "Notion専用: 選択テキストから図解画像を生成して貼り付け（設定は同期）",
+
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "clipboardWrite"
+  ],
+
   "host_permissions": [
     "https://www.notion.so/*",
-    "https://banana-on-notion-api-346214367756.us-central1.run.app/*"
+    "https://*.notion.so/*",
+    "https://www.notion.site/*",
+    "https://*.notion.site/*"
   ],
-  "background": { "service_worker": "service_worker.js" },
+
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+
   "content_scripts": [
     {
-      "matches": ["https://www.notion.so/*"],
-      "js": ["content.js"]
+      "matches": [
+        "https://www.notion.so/*",
+        "https://*.notion.so/*",
+        "https://www.notion.site/*",
+        "https://*.notion.site/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
     }
-  ]
+  ],
+
+  "action": {
+    "default_popup": "popup.html"
+  },
+
+  "options_page": "options.html"
 }
